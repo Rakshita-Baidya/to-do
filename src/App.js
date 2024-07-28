@@ -1,65 +1,76 @@
 import React, { useState } from "react";
-import editIcon from './edit.png';
-import deleteIcon from './delete.png';
+import TaskForm from "./components/TaskForm";
+import TaskFilters from "./components/TaskFilters";
+import TaskList from "./components/TaskList";
+import "./index.css";
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState('');
+  const [newTask, setNewTask] = useState("");
   const [editTaskId, setEditTaskId] = useState(null);
-  const [editTask, setEditTask] = useState('');
-  const [filter, setFilter] = useState('all');
+  const [editTask, setEditTask] = useState("");
+  const [filter, setFilter] = useState("all");
 
-  // change completion status
+  // toggle completed or pending
   const toggleTaskCompletion = (id) => {
-    setTasks(tasks.map(task => (
-      task.id === id ? { ...task, status: !task.status } : task
-    )));
+    setTimeout(() => {
+      setTasks(
+        tasks.map((task) =>
+          task.id === id ? { ...task, status: !task.status } : task
+        )
+      );
+    }, 500);
   };
 
-  // add a new task
+  // add new task
   const addTask = (e) => {
     e.preventDefault();
     if (!newTask.trim()) {
-      alert('Task cannot be empty.');
+      alert("Task cannot be empty.");
       return;
-    }else{
-      setTasks([...tasks, {
-        id: tasks.length + 1,
-        text: newTask,
-        date: new Date().toLocaleDateString(),
-        status: false
-      }]);
-      setNewTask('');
+    } else {
+      setTasks([
+        ...tasks,
+        {
+          id: tasks.length + 1,
+          text: newTask,
+          date: new Date().toLocaleDateString(),
+          status: false,
+        },
+      ]);
+      setNewTask("");
     }
   };
 
   // edit existing task
   const saveEdit = (id) => {
     if (!editTask.trim()) {
-      alert('Task cannot be empty.');
+      alert("Task cannot be empty.");
       return;
-    }else{
-      setTasks(tasks.map(task => (
-        task.id === id ? { ...task, text: editTask } : task
-      )));
+    } else {
+      setTasks(
+        tasks.map((task) =>
+          task.id === id ? { ...task, text: editTask } : task
+        )
+      );
       setEditTaskId(null);
-      setEditTask('');
+      setEditTask("");
     }
   };
-  
-  // delete existing task
+
+  // delete existing task from list
   const deleteTask = (id) => {
     setTimeout(() => {
-      setTasks(tasks.filter(task => task.id !== id));
-    }, 500);
+      setTasks(tasks.filter((task) => task.id !== id));
+    }, 250);
   };
 
-  // Filter tasks based on status
+  // filter tasks based on completion
   const getFilteredTasks = () => {
-    if (filter === 'pending') {
-      return tasks.filter(task => !task.status);
-    } else if (filter === 'completed') {
-      return tasks.filter(task => task.status);
+    if (filter === "pending") {
+      return tasks.filter((task) => !task.status);
+    } else if (filter === "completed") {
+      return tasks.filter((task) => task.status);
     } else {
       return tasks;
     }
@@ -68,102 +79,21 @@ function App() {
   return (
     <div className="app">
       <h1>To-Do List</h1>
-
-      {/* Create new task */}
-      <form onSubmit={addTask} className="add-task-form">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Task"
-        />
-        <button type="submit">Add</button>
-      </form>
-
-      {/* Task filters */}
-      <div className="task-filters">
-        <button
-          onClick={() => setFilter('all')}
-          className={filter === 'all' ? 'active-filter' : ''}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setFilter('pending')}
-          className={filter === 'pending' ? 'active-filter' : ''}
-        >
-          Pending
-        </button>
-        <button
-          onClick={() => setFilter('completed')}
-          className={filter === 'completed' ? 'active-filter' : ''}
-        >
-          Completed
-        </button>
-      </div>
-
-      {/* Show list of tasks */}
-      <table className="task-table">
-        <thead>
-          <tr>
-            <th className="status-column">Status</th>
-            <th className="task-column">Task</th>
-            <th className="date-column">Date</th>
-            <th className="action-column">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {/* get tasks based on the filter */}
-          {getFilteredTasks().map(task => (
-            <tr key={task.id} style={{
-              textDecoration: task.status ? 'line-through' : 'none',
-              color: task.status ? 'grey' : 'black'
-            }}>
-              {/* checkbox for each task */}
-              <td className="status-column">
-                <input
-                  type="checkbox"
-                  checked={task.status}
-                  onChange={() => toggleTaskCompletion(task.id)}
-                />
-              </td>
-              <td className="task-column">{task.text}</td>
-              <td className="date-column">{task.date}</td>
-              <td className="action-column">
-                {/* edit actions */}
-                {editTaskId === task.id ? (
-                  <>
-                    <input
-                      type="text"
-                      value={editTask}
-                      onChange={(e) => setEditTask(e.target.value)}
-                      className="action-input"
-                    />
-                    <button onClick={() => saveEdit(task.id)}>Save</button>
-                  </>
-                ) : (
-                  <>
-                  {/* edit and delete icons */}
-                    <img
-                      src={editIcon}
-                      alt="Edit"
-                      onClick={() => { setEditTaskId(task.id); setEditTask(task.text); }}
-                      className='action-images'
-                    />
-                    <img
-                      src={deleteIcon}
-                      alt="Delete"
-                      onClick={() => deleteTask(task.id)}
-                      className='action-images'
-                    />
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* add new task */}
+      <TaskForm newTask={newTask} setNewTask={setNewTask} addTask={addTask} />
+      {/* filter tasks based on completion */}
+      <TaskFilters filter={filter} setFilter={setFilter} />
+      {/* task list in a table */}
+      <TaskList
+        tasks={getFilteredTasks()}
+        toggleTaskCompletion={toggleTaskCompletion}
+        editTaskId={editTaskId}
+        setEditTaskId={setEditTaskId}
+        editTask={editTask}
+        setEditTask={setEditTask}
+        saveEdit={saveEdit}
+        deleteTask={deleteTask}
+      />
     </div>
   );
 }

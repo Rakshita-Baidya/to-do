@@ -4,20 +4,24 @@ body {
   background-color: #87b8bb;
   display: flex;
   justify-content: center;
+  margin: 0;
+  padding: 0;
+  background-image: url("./assets/background-to-do.png");
+  background-blend-mode: multiply;
+  background-size: cover;
 }
 
-/* Main container styling */
 .app {
   width: 85%;
   margin: 40px;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.95);
 }
 
-/* add task form styling */
+/* add task  */
 .add-task-form {
   display: flex;
   flex-wrap: wrap;
@@ -42,7 +46,7 @@ body {
   border-radius: 5px;
 }
 
-/* Filters button styling */
+/* task filter button */
 .task-filters > button {
   padding: 10px 15px;
   margin: 10px;
@@ -61,7 +65,7 @@ body {
   color: white;
 }
 
-/* Task table styling */
+/* view list of tasks */
 .task-table {
   margin: 10px 10px;
   width: 750px;
@@ -72,6 +76,7 @@ body {
 
 .task-table th {
   background: #c0c2c5;
+  height: 30px;
 }
 
 .task-table td {
@@ -81,7 +86,6 @@ body {
   word-break: break-word;
 }
 
-/* Column width definitions */
 .status-column {
   width: 70px;
 }
@@ -98,7 +102,6 @@ body {
   width: 225px;
 }
 
-/* Action images */
 .action-images {
   cursor: pointer;
   width: 25px;
@@ -106,7 +109,6 @@ body {
   padding: 5px;
 }
 
-/* Edit input styling within action column */
 .action-column > input {
   width: 125px;
   padding: 5px;
@@ -114,7 +116,6 @@ body {
   border: 1px solid rgb(94, 177, 192);
 }
 
-/* Action buttons styling */
 .action-column > button {
   padding: 5px 10px;
   margin-left: 5px;
