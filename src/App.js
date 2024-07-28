@@ -1,25 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TaskForm from "./components/TaskForm";
 import TaskFilters from "./components/TaskFilters";
 import TaskList from "./components/TaskList";
 import "./index.css";
+// for unique ids for each task
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    //tore tasks locally
+    const storedTasks = localStorage.getItem("tasks");
+    return storedTasks ? JSON.parse(storedTasks) : [];
+  });
   const [newTask, setNewTask] = useState("");
   const [editTaskId, setEditTaskId] = useState(null);
   const [editTask, setEditTask] = useState("");
   const [filter, setFilter] = useState("all");
 
+  // Update local storage whenever tasks change
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
   // toggle completed or pending
   const toggleTaskCompletion = (id) => {
-    setTimeout(() => {
-      setTasks(
-        tasks.map((task) =>
-          task.id === id ? { ...task, status: !task.status } : task
-        )
-      );
-    }, 500);
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, status: !task.status } : task
+      )
+    );
   };
 
   // add new task
@@ -32,7 +41,7 @@ function App() {
       setTasks([
         ...tasks,
         {
-          id: tasks.length + 1,
+          id: uuidv4(),
           text: newTask,
           date: new Date().toLocaleDateString(),
           status: false,
@@ -60,9 +69,7 @@ function App() {
 
   // delete existing task from list
   const deleteTask = (id) => {
-    setTimeout(() => {
-      setTasks(tasks.filter((task) => task.id !== id));
-    }, 250);
+    setTasks(tasks.filter((task) => task.id !== id));
   };
 
   // filter tasks based on completion
